@@ -1,10 +1,11 @@
 const http = require("http");
+const data = require("./data");
 
 const processUrl = (req, res) => {
-  const path = req.url.toLowerCase();
+  const path = req.url.toLowerCase().split("?")[0];
   if (path === "/") {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("Welcome to the homepage of Week 1 Assignment");
+    res.end(stringOfItemsWithGeneralInfo());
   } else if (path === "/about") {
     res.writeHead(200, { "Content-Type": "text/plain" });
     res.end(
@@ -27,11 +28,65 @@ const processUrl = (req, res) => {
       Taking a class that is taught by a developer encourages me a lot.\n
       Thank you for reading till this point.`
     );
+  } else if (path === "/detail") {
+    const product = getProductFromQuery(req.url);
+
+    if (product) {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end(stringOfAnItemWithDetailedInfo(product));
+    } else {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("Product not found");
+    }
   } else {
     res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("404 Not Found");
+    res.end(`404 Not Found \n ${path}`);
   }
 };
 
 const server = http.createServer(processUrl);
 server.listen(process.env.PORT || 3000);
+
+const stringOfItemsWithGeneralInfo = () => {
+  let stringOfItems = "";
+  data.getAll().forEach((product) => {
+    stringOfItems += stringOfAnItemWithGeneralInfo(product);
+    stringOfItems += "\n\n";
+  });
+  return stringOfItems;
+};
+
+const stringOfAnItemWithGeneralInfo = (item) => {
+  let stringOfAnItem = "[\n";
+  for (let key in Object.keys(item)) {
+    stringOfAnItem += `\t${Object.keys(item)[key]}: ${
+      Object.values(item)[key]
+    }\n`;
+  }
+  stringOfAnItem += `\tURL: ${createURLForProductName(item.name)}\n`;
+  stringOfAnItem += "]";
+  return stringOfAnItem;
+};
+
+const getProductFromQuery = (url) => {
+  const name = url.split("?")[1].split("=")[1];
+  return data.getItem(name);
+};
+
+const stringOfAnItemWithDetailedInfo = (item) => {
+  let stringOfAnItem = "";
+  for (let key in Object.keys(item)) {
+    stringOfAnItem += `\t${Object.keys(item)[key]}: ${
+      Object.values(item)[key]
+    }\n`;
+  }
+  stringOfAnItem += "";
+  return stringOfAnItem;
+};
+
+const createURLForProductName = (name) => {
+  return `http://localhost:3000/detail?name=${name
+    .toLowerCase()
+    .split(" ")
+    .join("-")}`;
+};

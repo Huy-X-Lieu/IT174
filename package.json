@@ -1,0 +1,22 @@
+{
+  "name": "it174",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Huy-X-Lieu/It174.git"
+  },
+  "author": "Huy Xuon Lieu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Huy-X-Lieu/It174/issues"
+  },
+  "homepage": "https://github.com/Huy-X-Lieu/It174#readme",
+  "dependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
