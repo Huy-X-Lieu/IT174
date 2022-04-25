@@ -84,7 +84,22 @@ exports.getAll = () => {
   return products;
 };
 
+exports.getAllWithGeneralInfo = () => {
+  return products.map((product) => {
+    const item = ({ name, type, brand, price, volume } = product);
+    item["url"] = createURLForProductName(item.name);
+    return item;
+  });
+};
+
 exports.getItem = (name) => {
   name = name.toLowerCase().split("-").join(" ");
   return products.find((product) => product.name.toLowerCase() === name);
+};
+
+const createURLForProductName = (name) => {
+  return `http://localhost:3000/detail?name=${name
+    .toLowerCase()
+    .split(" ")
+    .join("-")}`;
 };
